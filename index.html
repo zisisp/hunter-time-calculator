@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hunter 30% Time Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 50%, #8b4513 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            line-height: 1.6;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 640px;
+            width: 100%;
+            margin-top: 20px;
+            padding-bottom: 100px;
+        }
+
+        .card {
+            background: #f5f3e8;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            padding: 32px;
+            margin-bottom: 20px;
+            border: 3px solid #8b6914;
+        }
+
+        h1 {
+            color: #2d5a3d;
+            margin-bottom: 8px;
+            font-size: 28px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            color: #8b4513;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .description {
+            color: #5a5a5a;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+        }
+
+        .health-bar-container {
+            margin: 20px 0;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        .health-bar-wrapper {
+            position: relative;
+            width: 100%;
+            height: 40px;
+            background: #3d2817;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid #8b6914;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .health-bar-fill {
+            height: 100%;
+            transition: width 0.3s ease, background-color 0.3s ease;
+            background: linear-gradient(to bottom, #4caf50, #2e7d32);
+            position: relative;
+            border-radius: 17px;
+        }
+
+        .health-bar-fill.low {
+            background: linear-gradient(to bottom, #f44336, #c62828);
+        }
+
+        .health-bar-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 1;
+            white-space: nowrap;
+        }
+
+        .health-bar-target {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #5a5a5a;
+            font-weight: 600;
+        }
+
+        .spinner-btn {
+            width: 44px;
+            height: 44px;
+            background: #2d5a3d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .spinner-btn:active {
+            background: #1a472a;
+        }
+
+        label {
+            display: block;
+            color: #2d5a3d;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #8b6914;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            -webkit-appearance: none;
+            appearance: none;
+            background: white;
+        }
+
+        /* Remove number input spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2d5a3d;
+        }
+
+        input.error {
+            border-color: #c0392b;
+        }
+
+        .validation-message {
+            color: #c0392b;
+            font-size: 13px;
+            margin-top: 4px;
+            min-height: 18px;
+        }
+
+        .test-group {
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
+            display: none;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .result-main {
+            background: #e8f5e9;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+            border: 2px solid #2d5a3d;
+        }
+
+        .result-main-label {
+            color: #1a472a;
+            font-size: 14px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .result-time {
+            color: #1a472a;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .result-target {
+            color: #2d5a3d;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .help-notes {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .help-notes h3 {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .help-notes ul {
+            margin-left: 20px;
+        }
+
+        .help-notes li {
+            margin-bottom: 4px;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 8px 0;
+        }
+
+        .already-at-target {
+            background: #c8e6c9;
+            color: #1b5e20;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+            font-weight: 600;
+            border: 2px solid #2d5a3d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Monster Hunter Now</h1>
+            <div class="subtitle">Hunter Health Recovery Calculator</div>
+            <p class="description">Calculate the time needed for your hunter's health to regenerate.</p>
+
+            <form id="calculatorForm" onsubmit="return false;">
+                <div class="input-group">
+                    <label for="totalValue">Total Health (V)</label>
+                    <div class="input-wrapper">
+                        <button type="button" class="spinner-btn" onclick="decrementTotal()" aria-label="Decrease total health">−</button>
+                        <input 
+                            type="number" 
+                            id="totalValue" 
+                            step="1" 
+                            value="100"
+                            placeholder="e.g., 100"
+                            aria-describedby="totalValueError"
+                            aria-required="true"
+                        >
+                        <button type="button" class="spinner-btn" onclick="incrementTotal()" aria-label="Increase total health">+</button>
+                    </div>
+                    <div id="totalValueError" class="validation-message" role="alert"></div>
+                </div>
+
+                <div class="health-bar-container">
+                    <div class="health-bar-wrapper">
+                        <div class="health-bar-fill" id="healthBarFill"></div>
+                        <div class="health-bar-text" id="healthBarText">1 / 100</div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="currentValue">Current Health (C)</label>
+                    <div class="input-wrapper">
+                        <button type="button" class="spinner-btn" onclick="decrementCurrent()" aria-label="Decrease current health">−</button>
+                        <input 
+                            type="number" 
+                            id="currentValue" 
+                            step="1" 
+                            value="1"
+                            placeholder="e.g., 0"
+                            aria-describedby="currentValueError"
+                            aria-required="true"
+                        >
+                        <button type="button" class="spinner-btn" onclick="incrementCurrent()" aria-label="Increase current health">+</button>
+                    </div>
+                    <div id="currentValueError" class="validation-message" role="alert"></div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="card results" id="results" role="region" aria-live="polite">
+            <div id="alreadyAtTarget" class="already-at-target" style="display: none;">
+                Already at or above 30%
+            </div>
+
+            <div class="result-main">
+                <div class="result-main-label">Time to reach 30%:</div>
+                <div class="result-time" id="timeFormatResult">0m 00s</div>
+                <div class="result-target" id="targetDisplay">Target: 30</div>
+            </div>
+
+            <div class="result-main" style="background: #fff3e0; border-color: #8b4513;">
+                <div class="result-main-label" style="color: #8b4513;">Time to reach 100%:</div>
+                <div class="result-time" style="color: #bf360c;" id="timeFormat100Result">0m 00s</div>
+            </div>
+
+            <div class="result-row">
+                <span class="result-label">Target (30% of V, rounded up):</span>
+                <span class="result-value" id="targetResult">0</span>
+            </div>
+
+            <div class="result-row">
+                <span class="result-label">Rate per minute (V/60):</span>
+                <span class="result-value" id="rateResult">0.00</span>
+            </div>
+        </div>
+
+        <div class="card help-notes">
+            <h3>Formula & Constraints</h3>
+            <div class="formula">T = 60 × (0.3 − C/V) minutes</div>
+            <ul>
+                <li><strong>Target:</strong> 0.3 × V</li>
+                <li><strong>Rate per minute:</strong> V / 60</li>
+                <li><strong>Constraints:</strong> V > 0, 0 ≤ C ≤ V</li>
+                <li><strong>If C ≥ 0.3V:</strong> T = 0 (already at target)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Pure functions
+        function isValid(V, C) {
+            const errors = {};
+            
+            if (V === '' || V === null) {
+                errors.V = 'Total health V is required.';
+            } else if (isNaN(V) || V <= 0) {
+                errors.V = 'Total health V must be greater than 0.';
+            }
+            
+            if (C === '' || C === null) {
+                errors.C = 'Current health C is required.';
+            } else if (isNaN(C)) {
+                errors.C = 'Current health C must be a valid number.';
+            } else if (C < 0) {
+                errors.C = "Current health C can't be negative.";
+            } else if (!isNaN(V) && V > 0 && C > V) {
+                errors.C = "Current health C can't exceed total health V.";
+            }
+            
+            return {
+                valid: Object.keys(errors).length === 0,
+                errors
+            };
+        }
+
+        function computeTarget(V) {
+            return Math.ceil(0.3 * V);
+        }
+
+        function computeRatePerMinute(V) {
+            return V / 60;
+        }
+
+        function computeMinutes(V, C) {
+            if (V <= 0) return 0;
+            const target = Math.ceil(0.3 * V);
+            const needed = Math.max(0, target - C);
+            const rate = V / 60;
+            return needed / rate;
+        }
+
+        function computeMinutesTo100(V, C) {
+            if (V <= 0) return 0;
+            const needed = Math.max(0, V - C);
+            const rate = V / 60;
+            return needed / rate;
+        }
+
+        function toMMSS(minutes) {
+            const totalSeconds = Math.round(minutes * 60);
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            
+            return `${mins}m ${String(secs).padStart(2, '0')}s`;
+        }
+
+        function formatNumber(num, decimals = 2) {
+            return num.toLocaleString(undefined, {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            });
+        }
+
+        // DOM elements
+        const totalValueInput = document.getElementById('totalValue');
+        const currentValueInput = document.getElementById('currentValue');
+        const totalValueError = document.getElementById('totalValueError');
+        const currentValueError = document.getElementById('currentValueError');
+        const results = document.getElementById('results');
+        const alreadyAtTarget = document.getElementById('alreadyAtTarget');
+
+        // Spinner button functions
+        function incrementTotal() {
+            const current = parseFloat(totalValueInput.value) || 0;
+            totalValueInput.value = current + 1;
+            validateInputs();
+            calculate();
+        }
+
+        function decrementTotal() {
+            const current = parseFloat(totalValueInput.value) || 0;
+            totalValueInput.value = Math.max(0, current - 1);
+            validateInputs();
+            calculate();
+        }
+
+        function incrementCurrent() {
+            const current = parseFloat(currentValueInput.value) || 0;
+            currentValueInput.value = current + 1;
+            validateInputs();
+            calculate();
+        }
+
+        function decrementCurrent() {
+            const current = parseFloat(currentValueInput.value) || 0;
+            currentValueInput.value = Math.max(0, current - 1);
+            validateInputs();
+            calculate();
+        }
+
+        // Validation and UI update
+        function validateInputs() {
+            const V = parseFloat(totalValueInput.value);
+            const C = parseFloat(currentValueInput.value);
+            
+            const validation = isValid(V, C);
+            
+            // Update V error
+            if (validation.errors.V) {
+                totalValueError.textContent = validation.errors.V;
+                totalValueInput.classList.add('error');
+            } else {
+                totalValueError.textContent = '';
+                totalValueInput.classList.remove('error');
+            }
+            
+            // Update C error
+            if (validation.errors.C) {
+                currentValueError.textContent = validation.errors.C;
+                currentValueInput.classList.add('error');
+            } else {
+                currentValueError.textContent = '';
+                currentValueInput.classList.remove('error');
+            }
+            
+            return validation.valid;
+        }
+
+        function calculate() {
+            if (!validateInputs()) {
+                results.classList.remove('show');
+                return;
+            }
+            
+            const V = parseFloat(totalValueInput.value);
+            const C = parseFloat(currentValueInput.value);
+            
+            const target = computeTarget(V);
+            const rate = computeRatePerMinute(V);
+            const minutes = computeMinutes(V, C);
+            const mmss = toMMSS(minutes);
+            const minutes100 = computeMinutesTo100(V, C);
+            const mmss100 = toMMSS(minutes100);
+            
+            // Check if already at target
+            const atTarget = C >= target;
+            
+            // Update health bar
+            const percentage = Math.min(100, Math.max(0, (C / V) * 100));
+            const healthBarFill = document.getElementById('healthBarFill');
+            const healthBarText = document.getElementById('healthBarText');
+            
+            healthBarFill.style.width = percentage + '%';
+            healthBarText.textContent = Math.round(C) + ' / ' + Math.round(V);
+            
+            // Change color if below 30%
+            if (percentage < 30) {
+                healthBarFill.classList.add('low');
+            } else {
+                healthBarFill.classList.remove('low');
+            }
+            
+            // Update results
+            document.getElementById('timeFormatResult').textContent = mmss;
+            document.getElementById('timeFormat100Result').textContent = mmss100;
+            document.getElementById('targetDisplay').textContent = 'Target: ' + formatNumber(target, 0);
+            document.getElementById('targetResult').textContent = formatNumber(target, 0);
+            document.getElementById('rateResult').textContent = formatNumber(rate, 2);
+            
+            // Show/hide "already at target" message
+            alreadyAtTarget.style.display = atTarget ? 'block' : 'none';
+            
+            results.classList.add('show');
+        }
+
+        // Event listeners
+        totalValueInput.addEventListener('input', function() {
+            validateInputs();
+            calculate();
+        });
+        
+        currentValueInput.addEventListener('input', function() {
+            validateInputs();
+            calculate();
+        });
+        
+        currentValueInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculate();
+        });
+
+        // Initial calculation on page load
+        validateInputs();
+        calculate();
+    </script>
+</body>
+</html>
