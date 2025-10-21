@@ -411,25 +411,25 @@
         </div>
 
         <div class="result-row">
-            <span class="result-label">Target (30% of V, rounded up):</span>
-            <span class="result-value" id="targetResult">0</span>
+            <span class="result-label">Target (30% of V):</span>
+            <span class="result-value" id="targetResult">0.00</span>
         </div>
 
         <div class="result-row">
-            <span class="result-label">Rate per minute (V/60 − 1/18):</span>
+            <span class="result-label">Rate per minute (V/60):</span>
             <span class="result-value" id="rateResult">0.00</span>
         </div>
     </div>
 
     <div class="card help-notes">
         <h3>Formula & Constraints</h3>
-        <div class="formula">rate(V) = V/60 − 1/18, t = (Target − C_eff) / rate</div>
+        <div class="formula">t = 60 × (0.3 − C/V) minutes</div>
         <ul>
-            <li><strong>Target:</strong> ceil(0.3 × V)</li>
-            <li><strong>C_eff:</strong> max(C, 1)</li>
-            <li><strong>Rate per minute:</strong> V/60 − 1/18</li>
-            <li><strong>Constraints:</strong> V > 0, 0 ≤ C ≤ V</li>
-            <li><strong>If C ≥ Target or rate ≤ 0:</strong> t = 0</li>
+            <li><strong>Target:</strong> 0.3 × V (30% of max HP)</li>
+            <li><strong>Rate per minute:</strong> V/60 HP/min</li>
+            <li><strong>Time to 30%:</strong> 18 minutes (from 0 HP)</li>
+            <li><strong>Time to 100%:</strong> 60 minutes (from 0 HP)</li>
+            <li><strong>If C ≥ Target:</strong> t = 0</li>
         </ul>
     </div>
 </div>
@@ -462,36 +462,28 @@
     }
 
     function computeTarget(V) {
-        return Math.ceil(0.3 * V);
+        return 0.3 * V;
     }
 
-    const sixty = 60;
-
     function computeRatePerMinute(V) {
-        return V / sixty - 1 / 18;
+        return V / 60;
     }
 
     function computeMinutes(V, C) {
         if (V <= 0) return 0;
-        const target = Math.ceil(0.3 * V);
-        const C_eff = Math.max(C, 1);
-        const rate = V / sixty - 1 / 18;
+        const target = 0.3 * V;
 
-        if (rate <= 0) return 0;
         if (C >= target) return 0;
 
-        return Math.max(0, (target - C_eff) / rate);
+        return Math.max(0, 60 * (0.3 - C / V));
     }
 
     function computeMinutesTo100(V, C) {
         if (V <= 0) return 0;
-        const C_eff = Math.max(C, 1);
-        const rate = V / sixty - 1 / 18;
 
-        if (rate <= 0) return 0;
         if (C >= V) return 0;
 
-        return Math.max(0, (V - C_eff) / rate);
+        return Math.max(0, 60 * (1 - C / V));
     }
 
     function toMMSS(minutes) {
@@ -613,8 +605,8 @@
         // Update results
         document.getElementById('timeFormatResult').textContent = mmss;
         document.getElementById('timeFormat100Result').textContent = mmss100;
-        document.getElementById('targetDisplay').textContent = 'Target: ' + formatNumber(target, 0);
-        document.getElementById('targetResult').textContent = formatNumber(target, 0);
+        document.getElementById('targetDisplay').textContent = 'Target: ' + formatNumber(target, 1);
+        document.getElementById('targetResult').textContent = formatNumber(target, 1);
         document.getElementById('rateResult').textContent = formatNumber(rate, 2);
 
         // Show/hide "already at target" message
