@@ -416,20 +416,22 @@
         </div>
 
         <div class="result-row">
-            <span class="result-label">Rate per minute (V/60):</span>
+            <span class="result-label">Rate per minute (V/60 − 1/18):</span>
             <span class="result-value" id="rateResult">0.00</span>
         </div>
     </div>
 
     <div class="card help-notes">
         <h3>Formula & Constraints</h3>
-        <div class="formula">t = 60 × (0.3 − C/V) minutes</div>
+        <div class="formula">rate(V) = V/60 − 1/18</div>
+        <div class="formula">C<sub>eff</sub> = max(C, 1)</div>
+        <div class="formula">t = max(0, (0.3V − C<sub>eff</sub>) / rate(V))</div>
         <ul>
             <li><strong>Target:</strong> 0.3 × V (30% of max HP)</li>
-            <li><strong>Rate per minute:</strong> V/60 HP/min</li>
-            <li><strong>Time to 30%:</strong> 18 minutes (from 0 HP)</li>
-            <li><strong>Time to 100%:</strong> 60 minutes (from 0 HP)</li>
+            <li><strong>Rate per minute:</strong> V/60 − 1/18 HP/min</li>
+            <li><strong>Effective current health:</strong> max(C, 1)</li>
             <li><strong>If C ≥ Target:</strong> t = 0</li>
+            <li><strong>If rate ≤ 0:</strong> t = 0</li>
         </ul>
     </div>
 </div>
@@ -466,24 +468,36 @@
     }
 
     function computeRatePerMinute(V) {
-        return V / 60;
+        return V / 60 - 1 / 18;
     }
 
     function computeMinutes(V, C) {
         if (V <= 0) return 0;
         const target = 0.3 * V;
+        const rate = computeRatePerMinute(V);
 
-        if (C >= target) return 0;
+        if (C >= target || rate <= 0) return 0;
 
-        return Math.max(0, 60 * (0.3 - C / V));
+        const effectiveCurrent = Math.max(C, 1);
+        const remaining = target - effectiveCurrent;
+
+        if (remaining <= 0) return 0;
+
+        return Math.max(0, remaining / rate);
     }
 
     function computeMinutesTo100(V, C) {
         if (V <= 0) return 0;
+        const rate = computeRatePerMinute(V);
 
-        if (C >= V) return 0;
+        if (C >= V || rate <= 0) return 0;
 
-        return Math.max(0, 60 * (1 - C / V));
+        const effectiveCurrent = Math.max(C, 1);
+        const remaining = V - effectiveCurrent;
+
+        if (remaining <= 0) return 0;
+
+        return Math.max(0, remaining / rate);
     }
 
     function toMMSS(minutes) {
