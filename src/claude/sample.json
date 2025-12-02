@@ -1,0 +1,125 @@
+[
+  {
+    "type": "monster",
+    "en": "Great Jagras",
+    "jp": "ドスジャグラス",
+    "weakness": ["fire", "thunder"],
+    "materials": ["Jagras Scale", "Jagras Hide", "Jagras Mane"],
+    "habitat": "Forest",
+    "notes": "A pack leader that swallows prey whole. Weak spots include its bloated belly."
+  },
+  {
+    "type": "monster",
+    "en": "Anjanath",
+    "jp": "アンジャナフ",
+    "weakness": ["water", "ice"],
+    "materials": ["Anjanath Scale", "Anjanath Pelt", "Anjanath Fang"],
+    "habitat": "Forest",
+    "notes": "Aggressive brute wyvern. Extends nose plate when enraged."
+  },
+  {
+    "type": "monster",
+    "en": "Rathalos",
+    "jp": "リオレウス",
+    "weakness": ["dragon", "thunder"],
+    "materials": ["Rathalos Scale", "Rathalos Wing", "Rathalos Tail"],
+    "habitat": "Forest, Desert",
+    "notes": "King of the Skies. Master of aerial combat with poisonous talons."
+  },
+  {
+    "type": "weapon",
+    "en": "Iron Sword I",
+    "jp": "鉄刀【禊】",
+    "weapon_class": "Great Sword",
+    "rarity": "1",
+    "notes": "Basic great sword for beginners."
+  },
+  {
+    "type": "weapon",
+    "en": "Jagras Blade I",
+    "jp": "ジャグラスブレイドI",
+    "weapon_class": "Great Sword",
+    "rarity": "2",
+    "notes": "Great sword made from Great Jagras materials."
+  },
+  {
+    "type": "weapon",
+    "en": "Hunter's Bow I",
+    "jp": "ハンターボウI",
+    "weapon_class": "Bow",
+    "rarity": "1",
+    "notes": "Standard issue bow for new hunters."
+  },
+  {
+    "type": "armor",
+    "en": "Leather Headgear",
+    "jp": "レザーヘッドギア",
+    "slot": "head",
+    "skills": ["Health Boost Lv1"],
+    "notes": "Basic leather protection for the head."
+  },
+  {
+    "type": "armor",
+    "en": "Jagras Mail",
+    "jp": "ジャグラスメイル",
+    "slot": "chest",
+    "skills": ["Attack Boost Lv1", "Speed Eating Lv1"],
+    "notes": "Chest armor crafted from Jagras materials."
+  },
+  {
+    "type": "armor",
+    "en": "Rathalos Helm",
+    "jp": "リオレウスヘルム",
+    "slot": "head",
+    "skills": ["Attack Boost Lv2", "Weakness Exploit Lv1"],
+    "notes": "High-grade helm from Rathalos materials."
+  },
+  {
+    "type": "skill",
+    "en": "Attack Boost",
+    "jp": "攻撃",
+    "category": "offense",
+    "description": "Increases attack power. Higher levels provide larger bonuses.",
+    "notes": "One of the most popular offensive skills."
+  },
+  {
+    "type": "skill",
+    "en": "Defense Boost",
+    "jp": "防御",
+    "category": "defense",
+    "description": "Increases defense rating. Also provides elemental resistance at higher levels.",
+    "notes": "Good for survivability."
+  },
+  {
+    "type": "skill",
+    "en": "Critical Eye",
+    "jp": "見切り",
+    "category": "offense",
+    "description": "Increases affinity (critical hit rate).",
+    "notes": "Essential for critical-focused builds."
+  },
+  {
+    "type": "item",
+    "en": "Potion",
+    "jp": "回復薬",
+    "category": "consumable",
+    "description": "Restores a small amount of health.",
+    "notes": "Basic healing item. Can be used while moving."
+  },
+  {
+    "type": "item",
+    "en": "Mega Potion",
+    "jp": "回復薬グレート",
+    "category": "consumable",
+    "description": "Restores a moderate amount of health.",
+    "notes": "Upgraded version of regular potion."
+  },
+  {
+    "type": "item",
+    "en": "Paintball",
+    "jp": "ペイントボール",
+    "category": "tool",
+    "description": "Marks a monster for tracking. Unique to Monster Hunter Now.",
+    "notes": "Allows hunting marked monsters from anywhere."
+  }
+]
