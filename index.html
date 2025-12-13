@@ -351,15 +351,11 @@
       background: #fff7eb;
       border: 2px solid #8b4513;
       border-radius: 10px;
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      flex-wrap: wrap;
     }
 
     .code-lines {
-      flex: 1;
-      min-width: 220px;
+      display: grid;
+      gap: 10px;
     }
 
     .code-label {
@@ -374,28 +370,6 @@
       font-weight: 800;
       color: #2d5a3d;
       letter-spacing: 1px;
-    }
-
-    .qr-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      padding: 8px;
-      background: white;
-      border-radius: 8px;
-      border: 2px solid #e0d5c0;
-    }
-
-    #qrCode {
-      width: 160px;
-      height: 160px;
-    }
-
-    .qr-caption {
-      color: #5a5a5a;
-      font-size: 12px;
-      font-weight: 600;
     }
   </style>
 </head>
@@ -463,7 +437,7 @@
     </form>
   </div>
 
-  <div class="card results" id="results" role="region" aria-live="polite">
+  <div class="card results show" id="results" role="region" aria-live="polite">
     <div id="alreadyAtTarget" class="already-at-target" style="display: none;">
       Already at or above 30%
     </div>
@@ -481,14 +455,14 @@
 
     <div class="codes-section">
       <div class="code-lines">
-        <span class="code-label">My Friend Code</span>
-        <div class="code-value" id="friendCodeText">—</div>
-        <span class="code-label" style="margin-top: 10px;">My Referral Code</span>
-        <div class="code-value" id="referralCodeText">—</div>
-      </div>
-      <div class="qr-wrapper">
-        <div id="qrCode" aria-label="QR code for friend and referral codes"></div>
-        <div class="qr-caption">Scan to add me</div>
+        <div>
+          <span class="code-label">My Friend Code</span>
+          <div class="code-value" id="friendCodeText">—</div>
+        </div>
+        <div>
+          <span class="code-label">My Referral Code</span>
+          <div class="code-value" id="referralCodeText">—</div>
+        </div>
       </div>
     </div>
 
@@ -516,10 +490,7 @@
   </div>
 </div>
 
-<script>
-  /* QRCode.js - MIT License - https://davidshimjs.github.io/qrcodejs/ */
-  (function() {function u(t){this.mode=h.MODE_8BIT_BYTE,this.data=t,this.parsedData=[];for(var e=[],i=0,o=this.data.length;o>i;i++){var r=this.data.charCodeAt(i);r>65536?(e[0]=240|(1835008&r)>>>18,e[1]=128|(258048&r)>>>12,e[2]=128|(4032&r)>>>6,e[3]=128|63&r):r>2048?(e[0]=224|(61440&r)>>>12,e[1]=128|(4032&r)>>>6,e[2]=128|63&r):r>128?(e[0]=192|(1984&r)>>>6,e[1]=128|63&r):e[0]=r,this.parsedData=this.parsedData.concat(e)}this.parsedData.length!=this.data.length&&(this.parsedData.unshift(191),this.parsedData.unshift(187),this.parsedData.unshift(239))}function f(t,e){this.typeNumber=t,this.errorCorrectLevel=e,this.modules=null,this.moduleCount=0,this.dataCache=null,this.dataList=[]}function g(t,e){if(void 0==t.length)throw new Error(t.length+"/"+e);for(var i=0;i<t.length&&0==t[i];)i++;this.num=new Array(t.length-i+e);for(var o=0;o<t.length-i;o++)this.num[o]=t[o+i]}function a(t,e){this.totalCount=t,this.dataCount=e}function n(){var t=!1,e=navigator.userAgent;if(/android/i.test(e)){t=!0;var i=e.toString().match(/android ([0-9]\.[0-9])/i);i&&i[1]&&(t=parseFloat(i[1]))}return t}var h={};u.prototype={getLength:function(t){return this.parsedData.length},write:function(t){for(var e=0,i=this.parsedData.length;i>e;e++)t.put(this.parsedData[e],8)}},f.prototype={addData:function(t){var e=new u(t);this.dataList.push(e),this.dataCache=null},isDark:function(t,e){if(0>t||this.moduleCount<=t||0>e||this.moduleCount<=e)throw new Error(t+","+e);return this.modules[t][e]},getModuleCount:function(){return this.moduleCount},make:function(){this.makeImpl(!1,this.getBestMaskPattern())},makeImpl:function(t,e){this.moduleCount=4*this.typeNumber+17,this.modules=new Array(this.moduleCount);for(var i=0;i<this.moduleCount;i++){this.modules[i]=new Array(this.moduleCount);for(var o=0;o<this.moduleCount;o++)this.modules[i][o]=null}this.setupPositionProbePattern(0,0),this.setupPositionProbePattern(this.moduleCount-7,0),this.setupPositionProbePattern(0,this.moduleCount-7),this.setupPositionAdjustPattern(),this.setupTimingPattern(),this.setupTypeInfo(t,e),this.typeNumber>=7&&this.setupTypeNumber(t),null==this.dataCache&&(this.dataCache=f.createData(this.typeNumber,this.errorCorrectLevel,this.dataList)),this.mapData(this.dataCache,e)},setupPositionProbePattern:function(t,e){for(var i=-1;7>=i;i++)if(!(t+i<=-1||this.moduleCount<=t+i))for(var o=-1;7>=o;o++)e+o<=-1||this.moduleCount<=e+o||(this.modules[t+i][e+o]=i>=0&&i<=6&&(0==o||6==o)||o>=0&&o<=6&&(0==i||6==i)||i>=2&&i<=4&&o>=2&&o<=4?!0:!1)},getBestMaskPattern:function(){for(var t=0,e=0,i=0;8>i;i++){this.makeImpl(!0,i);var o=h.getLostPoint(this);(0==i||t>o)&&(t=o,e=i)}return e},createMovieClip:function(t,e,i){var o=t.createEmptyMovieClip(e,i),r=1;this.make();for(var a=0;a<this.modules.length;a++)for(var n=a*r,s=0;s<this.modules[a].length;s++){var l=s*r,c=this.modules[a][s];c&&(o.beginFill(0,100),o.moveTo(l,n),o.lineTo(l+r,n),o.lineTo(l+r,n+r),o.lineTo(l,n+r),o.endFill())}return o},setupTimingPattern:function(){for(var t=8;t<this.moduleCount-8;t++)null==this.modules[t][6]&&(this.modules[t][6]=0==t%2);for(var e=8;e<this.moduleCount-8;e++)null==this.modules[6][e]&&(this.modules[6][e]=0==e%2)},setupPositionAdjustPattern:function(){for(var t=h.getPatternPosition(this.typeNumber),e=0;e<t.length;e++)for(var i=0;i<t.length;i++){var o=t[e],r=t[i];if(null==this.modules[o][r])for(var a=-2;2>=a;a++)for(var n=-2;2>=n;n++)this.modules[o+a][r+n]=-2==a||2==a||-2==n||2==n||0==a&&0==n?!0:!1}},setupTypeNumber:function(t){for(var e=h.getBCHTypeNumber(this.typeNumber),i=0;18>i;i++){var o=!t&&1==(e>>i&1);this.modules[Math.floor(i/3)][i%3+this.moduleCount-8-3]=o}for(var i=0;18>i;i++){var o=!t&&1==(e>>i&1);this.modules[i%3+this.moduleCount-8-3][Math.floor(i/3)]=o}},setupTypeInfo:function(t,e){for(var i=this.errorCorrectLevel<<3|e,o=h.getBCHTypeInfo(i),r=0;15>r;r++){var a=!t&&1==(o>>r&1);6>r?this.modules[r][8]=a:8==r?this.modules[r+1][8]=a:this.modules[this.moduleCount-15+r][8]=a}for(var r=0;15>r;r++){var a=!t&&1==(o>>r&1);8>r?this.modules[8][this.moduleCount- r-1]=a:8==r?this.modules[8][15-r-1]=a:this.modules[8][15-r-1]=a}this.modules[this.moduleCount-8][8]=!t},mapData:function(t,e){for(var i=-1,o=this.moduleCount-1,r=7,a=0,n=this.moduleCount-1;n>0;n-=2)for(6==n&&n--;;){for(var s=0;2>s;s++)if(null==this.modules[o][n-s]){var l=!1;a<t.length&&(l=1==(t[a]>>>r&1)),h.getMask(e,o,n-s)&&(l=!l),this.modules[o][n-s]=l,r--,-1==r&&(a++,r=7)}if(o+=i,0>o||this.moduleCount<=o){o-=i,i=-i;break}}}};f.PAD0=236,f.PAD1=17,f.createData=function(t,e,i){for(var o=a.getRSBlocks(t,e),r=new c,n=0;n<i.length;n++){var s=i[n];r.put(s.mode,4),r.put(s.getLength(),h.getLengthInBits(s.mode,t)),s.write(r)}for(var l=0,n=0;n<o.length;n++)l+=o[n].dataCount;if(r.getLengthInBits()>8*l)throw new Error("code length overflow. ("+r.getLengthInBits()+">"+8*l+")");for(r.getLengthInBits()+4<=8*l&&r.put(0,4);0!=r.getLengthInBits()%8;)r.putBit(!1);for(;!(r.getLengthInBits()>=8*l)&&(r.put(f.PAD0,8),!(r.getLengthInBits()>=8*l));)r.put(f.PAD1,8);return f.createBytes(r,o)};function c(){this.buffer=[],this.length=0}c.prototype={getBuffer:function(){return this.buffer},getLengthInBits:function(){return this.length},put:function(t,e){for(var i=0;e>i;i++)this.putBit(1==(t>>>e-i-1&1))},putBit:function(t){var e=Math.floor(this.length/8);this.buffer.length<=e&&this.buffer.push(0),t&&(this.buffer[e]|=128>>>this.length%8),this.length++}};function d(t,e){this.errorCorrectLevel=e,this.version=t,this.modules=null,this.moduleCount=0,this.dataCache=null,this.dataList=[]}d.prototype=f.prototype;var s={};s.PATTERN_POSITION_TABLE=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],s.G15=1335,s.G18=7973,s.G15_MASK=21522,s.getBCHTypeInfo=function(t){for(var e=t<<10;s.getBCHDigit(e)-s.getBCHDigit(s.G15)>=0;)e^=s.G15<<s.getBCHDigit(e)-s.getBCHDigit(s.G15);return(t<<10|e)^s.G15_MASK},s.getBCHTypeNumber=function(t){for(var e=t<<12;s.getBCHDigit(e)-s.getBCHDigit(s.G18)>=0;)e^=s.G18<<s.getBCHDigit(e)-s.getBCHDigit(s.G18);return t<<12|e},s.getBCHDigit=function(t){for(var e=0;0!=t;)e++,t>>=1;return e},s.getPatternPosition=function(t){return s.PATTERN_POSITION_TABLE[t-1]},s.getMask=function(t,e,i){switch(t){case 0:return 0==(e+i)%2;case 1:return 0==e%2;case 2:return 0==i%3;case 3:return 0==(e+i)%3;case 4:return 0==(Math.floor(e/2)+Math.floor(i/3))%2;case 5:return 0==e*i%2+e*i%3;case 6:return 0==(e*i%2+e*i%3)%2;case 7:return 0==(e*i%3+(e+i)%2)%2;default:throw new Error("bad maskPattern:"+t)}},s.getErrorCorrectPolynomial=function(t){for(var e=new g([1],0),i=0;t>i;i++)e=e.multiply(new g([1,l.gexp(i)],0));return e},s.getLengthInBits=function(t,e){if(e>=1&&9>e)switch(t){case h.MODE_NUMBER:return 10;case h.MODE_ALPHA_NUM:return 9;case h.MODE_8BIT_BYTE:return 8;case h.MODE_KANJI:return 8;default:throw new Error("mode:"+t)}else if(10>e)switch(t){case h.MODE_NUMBER:return 12;case h.MODE_ALPHA_NUM:return 11;case h.MODE_8BIT_BYTE:return 16;case h.MODE_KANJI:return 10;default:throw new Error("mode:"+t)}else{if(!(27>e))throw new Error("type:"+e);switch(t){case h.MODE_NUMBER:return 14;case h.MODE_ALPHA_NUM:return 13;case h.MODE_8BIT_BYTE:return 16;case h.MODE_KANJI:return 12;default:throw new Error("mode:"+t)}}},s.getLostPoint=function(t){for(var e=t.getModuleCount(),i=0,o=0;e>o;o++)for(var r=0;e>r;r++){for(var a=0,n=t.isDark(o,r),s=-1;1>=s;s++)if(!(0>o+s||o+s>=e))for(var h=-1;1>=h;h++)0>r+h||r+h>=e||0==s&&0==h||n==t.isDark(o+s,r+h)&&a++;a>5&&(i+=3+a-5)}for(var o=0;e-1>o;o++)for(var r=0;e-1>r;r++){var l=0;t.isDark(o,r)&&l++,t.isDark(o+1,r)&&l++,t.isDark(o,r+1)&&l++,t.isDark(o+1,r+1)&&l++,0!=l&&4!=l||(i+=3)}for(var o=0;e>o;o++)for(var r=0;e-6>r;r++)t.isDark(o,r)&&!t.isDark(o,r+1)&&t.isDark(o,r+2)&&t.isDark(o,r+3)&&t.isDark(o,r+4)&&!t.isDark(o,r+5)&&t.isDark(o,r+6)&&(i+=40),t.isDark(r,o)&&!t.isDark(r+1,o)&&t.isDark(r+2,o)&&t.isDark(r+3,o)&&t.isDark(r+4,o)&&!t.isDark(r+5,o)&&t.isDark(r+6,o)&&(i+=40);for(var c=0,r=0;e>r;r++)for(var o=0;e>o;o++)t.isDark(o,r)&&c++;return i+=Math.abs(100*c/e/e-50)/5*10};var l={};l.glog=function(t){if(1>t)throw new Error("glog("+t+")");return l.LOG_TABLE[t]},l.gexp=function(t){for(;0>t;)t+=255;for(;t>=256;)t-=255;return l.EXP_TABLE[t]},l.EXP_TABLE=new Array(256),l.LOG_TABLE=new Array(256);for(var v=0;8>v;v++)l.EXP_TABLE[v]=1<<v;for(var v=8;256>v;v++)l.EXP_TABLE[v]=l.EXP_TABLE[v-4]^l.EXP_TABLE[v-5]^l.EXP_TABLE[v-6]^l.EXP_TABLE[v-8];for(var v=0;255>v;v++)l.LOG_TABLE[l.EXP_TABLE[v]]=v;function g(t,e){if(void 0==t.length)throw new Error(t.length+"/"+e);for(var i=0;i<t.length&&0==t[i];)i++;this.num=new Array(t.length-i+e);for(var o=0;o<t.length-i;o++)this.num[o]=t[o+i]}g.prototype.get=function(t){return this.num[t]},g.prototype.getLength=function(){return this.num.length},g.prototype.multiply=function(t){for(var e=new Array(this.getLength()+t.getLength()-1),i=0;i<this.getLength();i++)for(var o=0;o<t.getLength();o++)e[i+o]^=l.gexp(l.glog(this.get(i))+l.glog(t.get(o)));return new g(e,0)},g.prototype.mod=function(t){if(this.getLength()-t.getLength()<0)return this;for(var e=l.glog(this.get(0))-l.glog(t.get(0)),i=new Array(this.getLength()),o=0;o<this.getLength();o++)i[o]=this.get(o);for(var o=0;o<t.getLength();o++)i[o]^=l.gexp(l.glog(t.get(o))+e);return new g(i,0).mod(t)};var a={};a.RS_BLOCK_TABLE=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],a.getRSBlocks=function(t,e){var i=a.getRsBlockTable(t,e);if(void 0==i)throw new Error("bad rs block @ typeNumber:"+t+"/errorCorrectLevel:"+e);for(var o=i.length/3,r=[],n=0;o>n;n++)for(var s=i[3*n+0],h=i[3*n+1],l=i[3*n+2],c=0;s>c;c++)r.push(new a(h,l));return r},a.getRsBlockTable=function(t,e){switch(e){case 1:return a.RS_BLOCK_TABLE[4*(t-1)+0];case 0:return a.RS_BLOCK_TABLE[4*(t-1)+1];case 3:return a.RS_BLOCK_TABLE[4*(t-1)+2];case 2:return a.RS_BLOCK_TABLE[4*(t-1)+3];default:return}},a.RS_BLOCK_TABLE=a.RS_BLOCK_TABLE;var p=[[1,26,19],[1,26,16],[1,26,13],[1,26,9]],m={L:1,M:0,Q:3,H:2},b=function(){var t=function(t,e){var i=new f(t,e);return i};return t.stringToBytes=function(t){return n()?function(t){var e=[];for(var i=0;i<t.length;i++){var o=t.charCodeAt(i);e.push(255&o)}return e}(t):function(t){var e=[];for(var i=0;i<t.length;i++){var o=t.charCodeAt(i);e.push(o)}return e}(t)},t}();"function"==typeof define&&define.amd?define(function(){return b}):"undefined"!=typeof module&&module.exports?module.exports=b:t.QRCode=b})();
-</script>
+
 
 <script>
   // Pure functions
@@ -608,22 +579,12 @@
   const alreadyAtTarget = document.getElementById('alreadyAtTarget');
   const friendCodeText = document.getElementById('friendCodeText');
   const referralCodeText = document.getElementById('referralCodeText');
-  const qrContainer = document.getElementById('qrCode');
 
   const friendCode = '4527 3577 6570';
   const referralCode = '8YM6CJN8';
 
   friendCodeText.textContent = friendCode;
   referralCodeText.textContent = referralCode;
-
-  new QRCode(qrContainer, {
-    text: `My Friend Code: ${friendCode}\nMy Referral Code: ${referralCode}`,
-    width: 160,
-    height: 160,
-    colorDark: '#000000',
-    colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.H,
-  });
 
   // Spinner button functions
   function incrementTotal() {
