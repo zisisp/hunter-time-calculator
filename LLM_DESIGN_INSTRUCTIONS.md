@@ -1,55 +1,59 @@
-# LLM Instruction: Mobile App Design for `index.html`
+# LLM Instruction: Mirror the `index.html` Design for Mobile
 
-Use these guidelines to recreate the **Hunter 30% Time Calculator** in a Flutter mobile app (iOS and Android). Mirror the current `index.html` experience while adapting to native mobile patterns. Keep the wording concise so it can be fed directly to an LLM.
+Use these guidelines to recreate the **Hunter 30% Time Calculator** from `index.html` inside a Flutter mobile app (iOS and Android). Keep the wording concise so it can be fed directly to an LLM.
 
 ## Product Goals
-- Deliver the same calculator logic as `index.html`: compute target health (30% of V), decay rate (V / 60 per minute), minutes to hit 30%, and minutes to reach 100%, with MM:SS output formatting.
-- Preserve the friendly “hunter” aesthetic: forest-to-brown gradient background, parchment-style card, and gold/green accents.
-- Maintain validation behavior and helper messaging so users never see empty or confusing results.
+- Replicate every calculation shown on the web: target health (30% of V), rate per minute (V/60), time to reach 30%, and time to reach 100%, all formatted as `Xm Ys`.
+- Preserve the exact hunter theme: full-screen forest-to-brown gradient background, parchment cards with a gold (#8b6914) border and shadow, and deep green text accents.
+- Keep validation and messaging identical so users never see empty or confusing results.
 
-## UI / UX Blueprint
-- **Layout**: One scrollable card centered on the screen; include generous padding and drop shadow similar to the web card.
-- **Color & Typography**: Use the same palette as the web: deep greens (#1a472a, #2d5a3d), browns (#8b4513, #8b6914), parchment (#f5f3e8), and white text on dark bars. Use a clean system font stack equivalent (e.g., `SF Pro`/`Roboto`).
-- **Inputs**:
-  - Two numeric fields: **Total health (V)** and **Current health (C)**.
-  - Spinner/stepper buttons on both sides (+/−) mirroring the web layout; enforce non-negative numbers and prevent C from exceeding V.
-  - Inline validation messages under each field with red styling when invalid.
-- **Health Bar**:
-  - Progress bar showing `C / V` with centered text showing rounded values (e.g., `325 / 1000`).
-  - Switch bar to a red gradient when below 30%; keep a separate label below that shows the target health value.
-- **Results Section**:
-  - Show: formatted MM:SS to reach 30%, formatted MM:SS to reach 100%, the target health, and the rate per minute.
-  - Include the “already at target” notice when `C >= target`.
-  - Reveal results only when inputs are valid.
-- **Metadata Blocks**: Display friend code and referral code just like the web version.
-- **Copy interactions**: Provide a tap-to-copy affordance for codes (use platform clipboard APIs and a brief toast/snackbar confirmation).
+## UI / UX Blueprint (match the visible web layout)
+- **Overall layout**: One scrollable column of cards centered in the viewport. Each card has generous padding, rounded corners, and a strong drop shadow on parchment (#f5f3e8).
+- **Typography & palette**: System font stack (`-apple-system`, `Roboto`, etc.). Headings use deep green (#2d5a3d); subheadings use saddle brown (#8b4513). Body text uses muted gray (#5a5a5a).
+- **Hero card content**:
+  - Title: “Monster Hunter Now”; subtitle: “Hunter Health Recovery Calculator”; description: “Calculate the time needed for your hunter's health to regenerate.”
+  - Maker note centered under the description: “Made by ZedIsDead”.
+- **Input controls**:
+  - Two numeric fields with side steppers: **Total Health (V)** defaults to `100`; **Current Health (C)** defaults to `1` but is treated as `0` for calculations (so the first render shows the 18m baseline).
+  - Steppers are square, dark green (#2d5a3d) with white text; press state darkens (#1a472a).
+  - Inputs use thick gold borders (#8b6914); focus border switches to deep green (#2d5a3d). Show inline red validation text beneath each input.
+- **Health bar**:
+  - Dark wooden wrapper with gold border and inset shadow; inside fill is a vertical green gradient (`#4caf50` to `#2e7d32`).
+  - Centered white text reads `rounded C / rounded V` (e.g., `1 / 100`).
+  - Below the bar, show “Target health: {target}” using whole-number formatting. Swap fill to a red gradient (`#f44336` to `#c62828`) when below 30%.
+- **Results card** (always present but only shows values when inputs are valid):
+  - An optional green notice “Already at or above 30%” appears when `C >= target`.
+  - Primary block for 30% timing uses a pale green background (#e8f5e9), green border, and text. Show the label “Time to reach 30%:”, the large time value, and “Target: {target with 1 decimal}”.
+  - Secondary block for 100% timing uses pale orange (#fff3e0) with brown (#8b4513) border and deep orange text (#bf360c) for the time value.
+  - Codes strip below shows two stacked labels “My Friend Code” and “My Referral Code” with bold green values and a QR image to the right (`assets/friend-referral-qr.png.png`). Ensure both text values are exposed for tap-to-copy.
+  - Summary rows list “Target (30% of V)” and “Rate per minute (V/60)” with bold right-aligned values.
+- **Help card**:
+  - Header “Formula & Constraints”. Show the formula block `t = 60 × (0.3 − C/V) minutes` and a bulleted list exactly matching the web copy (target, rate, 18m/60m defaults, and the C ≥ Target rule).
 
 ## Behavior & Validation
-- Replicate the pure functions from `index.html`:
+- Pure functions should match the web:
   - `computeTarget(V) = 0.3 * V`
   - `computeRatePerMinute(V) = V / 60`
   - `computeMinutes(V, C) = max(0, 60 * (0.3 - C / V))`, but return 0 when `V <= 0` or `C >= target`
   - `computeMinutesTo100(V, C) = max(0, 60 * (1 - C / V))`, but return 0 when `V <= 0` or `C >= V`
-  - Format numbers with grouping and fixed decimals similar to the web outputs.
-- Run validation before calculations; hide the results block until inputs are valid.
-- Default calculation should run on first load with sensible starting values.
+  - `toMMSS` formatting matches the web’s `Xm Ys` output (two-digit seconds).
+- Inputs must be non-negative; run validation before calculations and hide results data when invalid.
+- On first load, auto-calculate with the default values (100 max, 1 current treated as 0) so the UI shows 30% target of 30, 1/100 bar, 18m to 30%, and 60m to 100%.
 
 ## Flutter Implementation Notes
-- Use a single `MaterialApp` with a themed `Scaffold` and a `Card` to mirror the parchment container.
-- Use `TextFormField` with input formatters for numbers and custom `Stepper`/`IconButton` controls for increment/decrement.
-- Use `LinearProgressIndicator` or a custom `Container` with animated width to recreate the health bar; support color swap below 30%.
-- Apply responsive padding and `MediaQuery` safe areas; ensure comfortable spacing on small screens.
-- Manage state with a lightweight approach (e.g., `StatefulWidget`); keep computation in pure helper methods.
+- Single `MaterialApp` with a themed `Scaffold`; use `Card` widgets to mirror the parchment containers and keep the gold borders/shadows.
+- Use `TextFormField` with numeric-only input formatters and custom stepper buttons for +/- controls.
+- Health bar can be a `Container` with animated width; swap to red gradient when percentage < 30% and overlay centered text.
+- Provide tap-to-copy interactions for friend/referral codes with a brief snackbar/toast confirmation.
+- Respect safe areas and add vertical padding so the scrollable stack breathes on small screens.
 
 ## Deployment & Automation
-- Use **Fastlane** for both platforms:
-  - iOS: lanes for build, test, and App Store/TestFlight upload; handle code signing via match or API keys.
-  - Android: lanes for build, test, and Play Store deployment with supply; keep keystore setup documented.
-- Add GitHub Actions workflows to lint, test, and trigger Fastlane lanes on main and release branches. Cache Flutter SDK and Gradle where possible.
-- Provide sample `.env`/secrets guidance for Fastlane and CI (API keys, keystore passwords, Apple credentials) without committing secrets.
+- Use **Fastlane** for iOS and Android: lanes for build, test, and store uploads (App Store/TestFlight and Play Store). Handle signing with match/API keys or keystore configuration.
+- Add GitHub Actions workflows to lint, test, and trigger Fastlane lanes on main/release branches. Cache Flutter SDK and Gradle where possible.
+- Include sample `.env`/secrets guidance for Fastlane and CI without committing secrets.
 
 ## Delivery Checklist
-- UI matches the web layout and palette while respecting platform conventions.
-- Validation, calculations, and “already at target” behavior match the web.
-- Copy-to-clipboard works on both platforms.
+- UI matches the web’s copy, colors, and layout described above.
+- Validation, calculations, and “already at target” behavior are identical to `index.html`.
+- Copy-to-clipboard works for both codes.
 - CI uses GitHub Actions; distribution uses Fastlane with documented lanes for iOS and Android.
